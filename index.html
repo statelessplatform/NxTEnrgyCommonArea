@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self'; img-src 'self' data:;">
+    <title>Society Savings Calculator | NxTEnrgy</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏢</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><span class="emoji">🏢</span> Society Common Area Calculator</h1>
+            <p class="subtitle">High-Volume Savings: NxTEnrgy vs. Competitor VNM</p>
+        </header>
+
+        <div class="calculator-layout">
+            <!-- INPUT SECTION -->
+            <div class="input-panel">
+                <div class="card control-card">
+                    <div class="card-header">
+                        <h2 class="card-title"><span class="emoji">⚡</span> Monthly Consumption</h2>
+                    </div>
+                    
+                    <div class="slider-container">
+                        <div class="slider-readout">
+                            <span class="readout-value" id="unitsDisplay">5,000</span>
+                            <span class="readout-unit">Units (kWh)</span>
+                        </div>
+                        
+                        <input type="range" id="unitSlider" min="5000" max="1000000" step="1000" value="5000" class="range-slider">
+                        
+                        <div class="slider-labels">
+                            <span>5k</span>
+                            <span>2.5L</span>
+                            <span>5L</span>
+                            <span>7.5L</span>
+                            <span>10L</span>
+                        </div>
+                    </div>
+                    
+                    <div class="input-group manual-input">
+                        <label for="manualUnits">Or enter manually:</label>
+                        <input type="number" id="manualUnits" min="5000" max="1000000" value="5000" step="1000">
+                    </div>
+                </div>
+
+                <!-- NEW: COMPARISON BOX -->
+                <div class="card vs-card">
+                    <div class="vs-header">
+                        <span class="emoji">🥊</span> Head-to-Head Savings
+                    </div>
+                    <div class="vs-content">
+                        <div class="vs-row">
+                            <span>NxTEnrgy Savings over Competitor:</span>
+                            <strong class="vs-highlight" id="savingsVsCompetitor">₹0</strong>
+                        </div>
+                        <p class="vs-subtext">Additional monthly savings by choosing NxTEnrgy over Competitor VNM</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- OUTPUT SECTION -->
+            <div class="output-panel">
+                <div class="card results-card">
+                    <div class="card-header">
+                        <h2 class="card-title"><span class="emoji">💰</span> Monthly Cost Analysis</h2>
+                    </div>
+
+                    <div class="results-grid">
+                        <!-- GRID COST -->
+                        <div class="result-card">
+                            <div class="result-label">Grid (MSEDCL)</div>
+                            <div class="result-value" id="gridCost">₹0</div>
+                            <div class="result-subtext">Estimated @ ₹10.50/unit</div>
+                        </div>
+
+                        <!-- COMPETITOR VNM -->
+                        <div class="result-card secondary">
+                            <div class="result-label">Competitor VNM</div>
+                            <div class="result-value" id="competitorCost">₹0</div>
+                            <div class="result-subtext">₹7.50/unit (Prepaid)</div>
+                        </div>
+
+                        <!-- NxTEnrgy -->
+                        <div class="result-card highlight">
+                            <div class="result-label"><span class="emoji">🚀</span> NxTEnrgy</div>
+                            <div class="result-value" id="nxtCost">₹0</div>
+                            <div class="result-subtext">₹5.50/unit + ₹200 Fixed</div>
+                        </div>
+                    </div>
+
+                    <!-- TOTAL SAVINGS -->
+                    <div class="total-savings-box">
+                        <div class="savings-label"><span class="emoji">🎉</span> Total Monthly Savings vs. Grid</div>
+                        <div class="savings-value" id="totalSavings">₹0</div>
+                        <div class="savings-bar-container">
+                            <div class="savings-bar" id="savingsBar"></div>
+                        </div>
+                        <div class="savings-percent">You save <span id="savingsPercent">0%</span> on your bill!</div>
+                    </div>
+
+                    <div class="projection-section">
+                        <h3><span class="emoji">📈</span> Annual Impact</h3>
+                        <div class="annual-grid">
+                            <div class="annual-item">
+                                <span class="lbl">Annual Savings</span>
+                                <span class="val" id="annualSavings">₹0</span>
+                            </div>
+                            <div class="annual-item highlight">
+                                <span class="lbl">NxTEnrgy Advantage</span>
+                                <span class="val" id="annualAdvantage">₹0</span>
+                                <span class="sub">Extra savings vs Competitor/yr</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button class="btn-icon" aria-label="Open user guide" data-action="guide">❓</button>
+
+        <dialog id="guideModal">
+            <h2><span class="emoji">🏢</span> Society Common Area Plan</h2>
+            <p><strong>Designed for High Volume:</strong></p>
+            <ul>
+                <li><strong>Scale:</strong> Calculator optimized for 5,000 to 10 Lakh units.</li>
+                <li><strong>Grid Rate:</strong> Assumed ₹10.50/unit (Commercial/HT Average).</li>
+            </ul>
+            <p><strong>NxTEnrgy Advantage:</strong></p>
+            <ul>
+                <li><strong>Rate:</strong> ₹5.50/unit (Flat) + ₹200 Fixed.</li>
+                <li><strong>Competitor:</strong> ₹7.50/unit.</li>
+                <li><strong>Result:</strong> Huge savings on volume consumption.</li>
+            </ul>
+            <button class="btn-primary modal-close" data-action="closeModal">Got it! <span class="emoji">✨</span></button>
+        </dialog>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
