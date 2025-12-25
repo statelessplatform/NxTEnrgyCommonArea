@@ -2,31 +2,57 @@
     'use strict';
 
     // Constants
-    const GRID_RATE = 10.50; // Assumed Average Rate for Society/Commercial High Usage
+    const GRID_RATE = 10.50; 
     const COMPETITOR_RATE = 7.50;
     const NXT_RATE = 5.50;
-    const NXT_FIXED = 200;
+    const NXT_FIXED_MONTHLY = 200;
 
     // Elements
     const slider = document.getElementById('unitSlider');
     const manualInput = document.getElementById('manualUnits');
     const unitsDisplay = document.getElementById('unitsDisplay');
+    const viewToggle = document.getElementById('viewToggle');
+    const toggleContainer = document.querySelector('.view-toggle-container');
 
     function formatCurrency(num) {
         return '₹' + Math.round(num).toLocaleString('en-IN');
     }
 
     function calculate() {
-        let units = parseInt(slider.value);
+        let monthlyUnits = parseInt(slider.value);
+        let isYearly = viewToggle.checked;
+        let multiplier = isYearly ? 12 : 1;
+
+        // UI Updates based on View Mode
+        if (isYearly) {
+            toggleContainer.classList.add('yearly-active');
+            document.getElementById('unitsLabel').textContent = "Equivalent Monthly Units";
+            document.getElementById('costTitle').textContent = "Annual";
+            document.getElementById('totalSavingsLabel').textContent = "Annual";
+            document.getElementById('vsSubtext').textContent = "Annual additional savings vs Competitor";
+        } else {
+            toggleContainer.classList.remove('yearly-active');
+            document.getElementById('unitsLabel').textContent = "Units / Month";
+            document.getElementById('costTitle').textContent = "Monthly";
+            document.getElementById('totalSavingsLabel').textContent = "Monthly";
+            document.getElementById('vsSubtext').textContent = "Monthly additional savings vs Competitor";
+        }
         
         // Sync Inputs
-        manualInput.value = units;
-        unitsDisplay.textContent = units.toLocaleString('en-IN');
+        manualInput.value = monthlyUnits;
+        unitsDisplay.textContent = monthlyUnits.toLocaleString('en-IN');
 
-        // 1. Calculate Monthly Costs
-        const gridCost = units * GRID_RATE;
-        const competitorCost = units * COMPETITOR_RATE;
-        const nxtCost = (units * NXT_RATE) + NXT_FIXED;
+        // CALCULATION LOGIC
+        // Always calculate based on monthly inputs, then multiply final results if yearly view is on.
+        // This ensures the slider always represents the input "Monthly Units" which is easier for users to estimate.
+
+        const unitsToCalc = monthlyUnits * multiplier;
+        const fixedFeeToCalc = NXT_FIXED_MONTHLY * multiplier;
+
+        // 1. Calculate Costs
+        const gridCost = unitsToCalc * GRID_RATE;
+        const competitorCost = unitsToCalc * COMPETITOR_RATE;
+        const nxtCost = (unitsToCalc * NXT_RATE) + fixedFeeToCalc;
 
         // 2. Calculate Savings
         const savingsVsGrid = gridCost - nxtCost;
@@ -42,10 +68,6 @@
         document.getElementById('savingsVsCompetitor').textContent = formatCurrency(savingsVsCompetitor);
         document.getElementById('totalSavings').textContent = formatCurrency(savingsVsGrid);
         document.getElementById('savingsPercent').textContent = Math.round(savingsPercent) + '%';
-
-        // 5. Update UI - Annual Projections
-        document.getElementById('annualSavings').textContent = formatCurrency(savingsVsGrid * 12);
-        document.getElementById('annualAdvantage').textContent = formatCurrency(savingsVsCompetitor * 12);
     }
 
     // Event Listeners
@@ -59,6 +81,10 @@
             slider.value = val;
             calculate();
         }
+    });
+
+    viewToggle.addEventListener('change', function() {
+        calculate();
     });
 
     document.addEventListener('click', function(e) {
