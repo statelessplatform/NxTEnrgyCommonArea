@@ -24,9 +24,70 @@ body {
 
 .container { max-width: 1200px; margin: 0 auto; }
 
-header { text-align: center; margin-bottom: var(--space-lg); }
+header { text-align: center; margin-bottom: 24px; }
 h1 { font-size: 32px; font-weight: 800; color: #1a1a1a; margin-bottom: 8px; }
 .subtitle { font-size: 18px; color: #666; }
+
+/* TOGGLE SWITCH STYLES */
+.view-toggle-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 32px;
+    background: #fff;
+    padding: 12px 24px;
+    border-radius: 50px;
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.toggle-label {
+    font-weight: 600;
+    color: #888;
+    transition: color 0.3s;
+}
+
+.view-toggle-container.yearly-active #lblYearly { color: var(--brand-blue); }
+.view-toggle-container:not(.yearly-active) #lblMonthly { color: var(--brand-blue); }
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 52px;
+    height: 28px;
+}
+
+.switch input { opacity: 0; width: 0; height: 0; }
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 20px;
+    width: 20px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+}
+
+input:checked + .slider { background-color: var(--brand-blue); }
+input:focus + .slider { box-shadow: 0 0 1px var(--brand-blue); }
+input:checked + .slider:before { transform: translateX(24px); }
+
+.slider.round { border-radius: 34px; }
+.slider.round:before { border-radius: 50%; }
+
 
 /* LAYOUT */
 .calculator-layout {
@@ -154,30 +215,12 @@ h1 { font-size: 32px; font-weight: 800; color: #1a1a1a; margin-bottom: 8px; }
     padding: 24px;
     border-radius: 16px;
     text-align: center;
-    margin-bottom: 32px;
+    margin-bottom: 0;
 }
 
 .savings-label { font-size: 16px; font-weight: 600; margin-bottom: 8px; opacity: 0.9; }
 .savings-value { font-size: 48px; font-weight: 800; line-height: 1; margin-bottom: 16px; text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
 .savings-percent { font-size: 14px; opacity: 0.9; font-weight: 500; }
-
-/* ANNUAL GRID */
-.annual-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
-}
-.annual-item {
-    background: #f5f5f5;
-    padding: 16px;
-    border-radius: 12px;
-    display: flex;
-    flex-direction: column;
-}
-.annual-item.highlight { background: #FFF3E0; color: #E65100; }
-.annual-item .lbl { font-size: 12px; font-weight: 600; text-transform: uppercase; opacity: 0.7; }
-.annual-item .val { font-size: 20px; font-weight: 700; margin-top: 4px; }
-.annual-item .sub { font-size: 11px; margin-top: 4px; opacity: 0.8; }
 
 /* HELP BTN */
 .btn-icon {
