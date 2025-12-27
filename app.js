@@ -13,6 +13,8 @@
     const unitsDisplay = document.getElementById('unitsDisplay');
     const viewToggle = document.getElementById('viewToggle');
     const toggleContainer = document.querySelector('.view-toggle-container');
+    const complianceToggle = document.getElementById('complianceToggle');
+    const complianceContent = document.getElementById('complianceContent');
 
     function formatCurrency(num) {
         return '₹' + Math.round(num).toLocaleString('en-IN');
@@ -41,10 +43,6 @@
         // Sync Inputs
         manualInput.value = monthlyUnits;
         unitsDisplay.textContent = monthlyUnits.toLocaleString('en-IN');
-
-        // CALCULATION LOGIC
-        // Always calculate based on monthly inputs, then multiply final results if yearly view is on.
-        // This ensures the slider always represents the input "Monthly Units" which is easier for users to estimate.
 
         const unitsToCalc = monthlyUnits * multiplier;
         const fixedFeeToCalc = NXT_FIXED_MONTHLY * multiplier;
@@ -87,6 +85,13 @@
         calculate();
     });
 
+    // Compliance Accordion Toggle
+    complianceToggle.addEventListener('click', function() {
+        this.classList.toggle('active');
+        complianceContent.classList.toggle('active');
+    });
+
+    // Dialog
     document.addEventListener('click', function(e) {
         const target = e.target.closest('[data-action]');
         if (target) {
@@ -101,6 +106,6 @@
 
     // Init
     calculate();
-    console.log('Society Calculator Initialized 🏢');
+    console.log('Society Calculator Initialized 🏢 - with Compliance Section');
 
 })();
