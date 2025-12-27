@@ -20,12 +20,12 @@
 
         <!-- VIEW TOGGLE SWITCH -->
         <div class="view-toggle-container">
-            <span class="toggle-label" id="lblMonthly">Monthly View</span>
+            <span class="toggle-label" id="lblMonthly">Monthly</span>
             <label class="switch">
                 <input type="checkbox" id="viewToggle">
                 <span class="slider round"></span>
             </label>
-            <span class="toggle-label" id="lblYearly">Yearly View</span>
+            <span class="toggle-label" id="lblYearly">Annual</span>
         </div>
 
         <div class="calculator-layout">
@@ -33,13 +33,13 @@
             <div class="input-panel">
                 <div class="card control-card">
                     <div class="card-header">
-                        <h2 class="card-title"><span class="emoji">⚡</span> Consumption</h2>
+                        <h2 class="card-title"><span class="emoji">⚡</span> Monthly Consumption</h2>
                     </div>
                     
                     <div class="slider-container">
                         <div class="slider-readout">
                             <span class="readout-value" id="unitsDisplay">5,000</span>
-                            <span class="readout-unit" id="unitsLabel">Units / Month</span>
+                            <span class="readout-unit">Units per Month</span>
                         </div>
                         
                         <input type="range" id="unitSlider" min="5000" max="1000000" step="1000" value="5000" class="range-slider">
@@ -54,22 +54,27 @@
                     </div>
                     
                     <div class="input-group manual-input">
-                        <label for="manualUnits">Enter Monthly Units:</label>
+                        <label for="manualUnits">Enter Average Monthly Units:</label>
                         <input type="number" id="manualUnits" min="5000" max="1000000" value="5000" step="1000">
+                    </div>
+
+                    <div class="info-box">
+                        <span class="emoji">ℹ️</span>
+                        <p><strong>How it works:</strong> Enter your average monthly consumption. Toggle to "Annual" view to see 12-month projections.</p>
                     </div>
                 </div>
 
                 <!-- COMPARISON BOX -->
                 <div class="card vs-card">
                     <div class="vs-header">
-                        <span class="emoji">🥊</span> Head-to-Head Savings
+                        <span class="emoji">🥊</span> Head-to-Head Advantage
                     </div>
                     <div class="vs-content">
                         <div class="vs-row">
-                            <span>NxTEnrgy Savings over Competitor:</span>
+                            <span id="vsLabel">Monthly Savings over Competitor:</span>
                             <strong class="vs-highlight" id="savingsVsCompetitor">₹0</strong>
                         </div>
-                        <p class="vs-subtext" id="vsSubtext">Additional savings by choosing NxTEnrgy</p>
+                        <p class="vs-subtext" id="vsSubtext">Extra savings with NxTEnrgy vs Competitor VNM</p>
                     </div>
                 </div>
             </div>
@@ -78,7 +83,10 @@
             <div class="output-panel">
                 <div class="card results-card">
                     <div class="card-header">
-                        <h2 class="card-title"><span class="emoji">💰</span> <span id="costTitle">Monthly</span> Cost Analysis</h2>
+                        <h2 class="card-title">
+                            <span class="emoji">💰</span> 
+                            <span id="costTitle">Monthly</span> Cost Breakdown
+                        </h2>
                     </div>
 
                     <div class="results-grid">
@@ -86,29 +94,32 @@
                         <div class="result-card">
                             <div class="result-label">Grid (MSEDCL)</div>
                             <div class="result-value" id="gridCost">₹0</div>
-                            <div class="result-subtext">Estimated @ ₹10.50/unit</div>
+                            <div class="result-subtext">@ ₹10.50/unit</div>
                         </div>
 
                         <!-- COMPETITOR VNM -->
                         <div class="result-card secondary">
                             <div class="result-label">Competitor VNM</div>
                             <div class="result-value" id="competitorCost">₹0</div>
-                            <div class="result-subtext">₹7.50/unit (Prepaid)</div>
+                            <div class="result-subtext">@ ₹7.50/unit (Prepaid)</div>
                         </div>
 
                         <!-- NxTEnrgy -->
                         <div class="result-card highlight">
                             <div class="result-label"><span class="emoji">🚀</span> NxTEnrgy</div>
                             <div class="result-value" id="nxtCost">₹0</div>
-                            <div class="result-subtext">₹5.50/unit + Fixed Fee</div>
+                            <div class="result-subtext" id="nxtSubtext">@ ₹5.50/unit + ₹200/mo</div>
                         </div>
                     </div>
 
                     <!-- TOTAL SAVINGS -->
                     <div class="total-savings-box">
-                        <div class="savings-label"><span class="emoji">🎉</span> Total <span id="totalSavingsLabel">Monthly</span> Savings vs. Grid</div>
+                        <div class="savings-label">
+                            <span class="emoji">🎉</span> 
+                            <span id="totalSavingsLabel">Monthly</span> Savings vs Grid
+                        </div>
                         <div class="savings-value" id="totalSavings">₹0</div>
-                        <div class="savings-percent">You save <span id="savingsPercent">0%</span> on your bill!</div>
+                        <div class="savings-percent">You save <span id="savingsPercent">0%</span> on electricity costs!</div>
                     </div>
                 </div>
             </div>
@@ -207,17 +218,27 @@
         <button class="btn-icon" aria-label="Open user guide" data-action="guide">❓</button>
 
         <dialog id="guideModal">
-            <h2><span class="emoji">🏢</span> Society Common Area Plan</h2>
-            <p><strong>Designed for High Volume:</strong></p>
+            <h2><span class="emoji">🏢</span> How This Calculator Works</h2>
+            
+            <h3>📊 Input Your Consumption</h3>
+            <p>Enter your <strong>average monthly electricity consumption</strong> using the slider or manual input (5,000 to 10,00,000 units).</p>
+            
+            <h3>🔄 Toggle View Mode</h3>
             <ul>
-                <li><strong>View Options:</strong> Toggle between Monthly and Yearly views to see the big picture.</li>
-                <li><strong>Grid Rate:</strong> Assumed ₹10.50/unit (Commercial/HT Average).</li>
+                <li><strong>Monthly View:</strong> Shows costs for one month of consumption</li>
+                <li><strong>Annual View:</strong> Shows projected costs for 12 months (Monthly × 12)</li>
             </ul>
-            <p><strong>NxTEnrgy Advantage:</strong></p>
+            
+            <h3>💡 Understanding The Plans</h3>
             <ul>
-                <li><strong>Rate:</strong> ₹5.50/unit (Flat) + ₹200/mo Fixed.</li>
-                <li><strong>Result:</strong> Massive savings multiplier when viewed Annually!</li>
+                <li><strong>Grid (MSEDCL):</strong> ₹10.50/unit - Your current baseline cost</li>
+                <li><strong>Competitor VNM:</strong> ₹7.50/unit - Prepaid model with high upfront cost</li>
+                <li><strong>NxTEnrgy:</strong> ₹5.50/unit + ₹200/month fixed - Best value with no upfront cost</li>
             </ul>
+            
+            <h3>✨ Key Benefits</h3>
+            <p><strong>NxTEnrgy Advantage:</strong> The "Head-to-Head" box shows exactly how much MORE you save with NxTEnrgy compared to the Competitor.</p>
+            
             <button class="btn-primary modal-close" data-action="closeModal">Got it! <span class="emoji">✨</span></button>
         </dialog>
     </div>
