@@ -48,12 +48,19 @@ h1 { font-size: 32px; font-weight: 800; color: #1a1a1a; margin-bottom: 8px; }
 
 .toggle-label {
     font-weight: 600;
+    font-size: 14px;
     color: #888;
-    transition: color 0.3s;
+    transition: all 0.3s;
 }
 
-.view-toggle-container.yearly-active #lblYearly { color: var(--brand-blue); }
-.view-toggle-container:not(.yearly-active) #lblMonthly { color: var(--brand-blue); }
+.view-toggle-container.yearly-active #lblYearly { 
+    color: var(--brand-blue); 
+    font-size: 16px;
+}
+.view-toggle-container:not(.yearly-active) #lblMonthly { 
+    color: var(--brand-blue); 
+    font-size: 16px;
+}
 
 .switch {
     position: relative;
@@ -109,6 +116,29 @@ input:checked + .slider:before { transform: translateX(24px); }
 
 .card-header { margin-bottom: 24px; border-bottom: 1px solid #eee; padding-bottom: 16px; }
 .card-title { font-size: 20px; font-weight: 700; display: flex; align-items: center; gap: 12px; }
+
+/* INFO BOX */
+.info-box {
+    margin-top: 24px;
+    padding: 16px;
+    background: #FFF3E0;
+    border-left: 4px solid #FF9800;
+    border-radius: 8px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.info-box .emoji {
+    font-size: 20px;
+}
+
+.info-box p {
+    font-size: 13px;
+    line-height: 1.5;
+    color: #E65100;
+    margin: 0;
+}
 
 /* SLIDER STYLES */
 .slider-container { margin-bottom: 32px; text-align: center; }
@@ -179,7 +209,7 @@ input:checked + .slider:before { transform: translateX(24px); }
 }
 .manual-input label { font-size: 14px; font-weight: 600; color: #555; }
 .manual-input input {
-    width: 120px;
+    width: 140px;
     padding: 8px 12px;
     border: 1px solid #ddd;
     border-radius: 6px;
@@ -193,7 +223,8 @@ input:checked + .slider:before { transform: translateX(24px); }
     border: none;
 }
 .vs-header { font-size: 18px; font-weight: 600; margin-bottom: 16px; opacity: 0.9; }
-.vs-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.vs-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 8px; }
+.vs-row span { font-size: 14px; }
 .vs-highlight { font-size: 32px; color: #4CAF50; font-weight: 800; }
 .vs-subtext { font-size: 13px; opacity: 0.7; line-height: 1.4; }
 
@@ -425,8 +456,20 @@ dialog::backdrop {
 }
 
 dialog h2 {
-    margin-bottom: 16px;
+    margin-bottom: 20px;
     color: #1a1a1a;
+}
+
+dialog h3 {
+    font-size: 16px;
+    margin-top: 20px;
+    margin-bottom: 8px;
+    color: #333;
+}
+
+dialog p {
+    margin-bottom: 12px;
+    line-height: 1.6;
 }
 
 dialog ul {
@@ -445,6 +488,7 @@ dialog ul {
     cursor: pointer;
     width: 100%;
     font-size: 16px;
+    margin-top: 8px;
 }
 
 .btn-primary:hover {
