@@ -23,46 +23,58 @@
     function calculate() {
         let monthlyUnits = parseInt(slider.value);
         let isYearly = viewToggle.checked;
-        let multiplier = isYearly ? 12 : 1;
 
         // UI Updates based on View Mode
         if (isYearly) {
             toggleContainer.classList.add('yearly-active');
-            document.getElementById('unitsLabel').textContent = "Equivalent Monthly Units";
             document.getElementById('costTitle').textContent = "Annual";
             document.getElementById('totalSavingsLabel').textContent = "Annual";
-            document.getElementById('vsSubtext').textContent = "Annual additional savings vs Competitor";
+            document.getElementById('vsLabel').textContent = "Annual Savings over Competitor:";
+            document.getElementById('vsSubtext').textContent = "Extra savings with NxTEnrgy vs Competitor VNM per year";
+            document.getElementById('nxtSubtext').textContent = "@ ₹5.50/unit + ₹2,400/year";
         } else {
             toggleContainer.classList.remove('yearly-active');
-            document.getElementById('unitsLabel').textContent = "Units / Month";
             document.getElementById('costTitle').textContent = "Monthly";
             document.getElementById('totalSavingsLabel').textContent = "Monthly";
-            document.getElementById('vsSubtext').textContent = "Monthly additional savings vs Competitor";
+            document.getElementById('vsLabel').textContent = "Monthly Savings over Competitor:";
+            document.getElementById('vsSubtext').textContent = "Extra savings with NxTEnrgy vs Competitor VNM per month";
+            document.getElementById('nxtSubtext').textContent = "@ ₹5.50/unit + ₹200/mo";
         }
         
         // Sync Inputs
         manualInput.value = monthlyUnits;
         unitsDisplay.textContent = monthlyUnits.toLocaleString('en-IN');
 
-        const unitsToCalc = monthlyUnits * multiplier;
-        const fixedFeeToCalc = NXT_FIXED_MONTHLY * multiplier;
+        // CORRECTED CALCULATION LOGIC
+        // Step 1: Calculate monthly costs
+        const monthlyGridCost = monthlyUnits * GRID_RATE;
+        const monthlyCompetitorCost = monthlyUnits * COMPETITOR_RATE;
+        const monthlyNxtCost = (monthlyUnits * NXT_RATE) + NXT_FIXED_MONTHLY;
 
-        // 1. Calculate Costs
-        const gridCost = unitsToCalc * GRID_RATE;
-        const competitorCost = unitsToCalc * COMPETITOR_RATE;
-        const nxtCost = (unitsToCalc * NXT_RATE) + fixedFeeToCalc;
+        // Step 2: If yearly view, multiply monthly costs by 12
+        let displayGridCost, displayCompetitorCost, displayNxtCost;
+        
+        if (isYearly) {
+            displayGridCost = monthlyGridCost * 12;
+            displayCompetitorCost = monthlyCompetitorCost * 12;
+            displayNxtCost = monthlyNxtCost * 12;
+        } else {
+            displayGridCost = monthlyGridCost;
+            displayCompetitorCost = monthlyCompetitorCost;
+            displayNxtCost = monthlyNxtCost;
+        }
 
-        // 2. Calculate Savings
-        const savingsVsGrid = gridCost - nxtCost;
-        const savingsVsCompetitor = competitorCost - nxtCost;
-        const savingsPercent = (savingsVsGrid / gridCost) * 100;
+        // Step 3: Calculate Savings
+        const savingsVsGrid = displayGridCost - displayNxtCost;
+        const savingsVsCompetitor = displayCompetitorCost - displayNxtCost;
+        const savingsPercent = (savingsVsGrid / displayGridCost) * 100;
 
-        // 3. Update UI - Costs
-        document.getElementById('gridCost').textContent = formatCurrency(gridCost);
-        document.getElementById('competitorCost').textContent = formatCurrency(competitorCost);
-        document.getElementById('nxtCost').textContent = formatCurrency(nxtCost);
+        // Step 4: Update UI - Costs
+        document.getElementById('gridCost').textContent = formatCurrency(displayGridCost);
+        document.getElementById('competitorCost').textContent = formatCurrency(displayCompetitorCost);
+        document.getElementById('nxtCost').textContent = formatCurrency(displayNxtCost);
 
-        // 4. Update UI - Comparison & Savings
+        // Step 5: Update UI - Comparison & Savings
         document.getElementById('savingsVsCompetitor').textContent = formatCurrency(savingsVsCompetitor);
         document.getElementById('totalSavings').textContent = formatCurrency(savingsVsGrid);
         document.getElementById('savingsPercent').textContent = Math.round(savingsPercent) + '%';
@@ -106,6 +118,6 @@
 
     // Init
     calculate();
-    console.log('Society Calculator Initialized 🏢 - with Compliance Section');
+    console.log('✅ Society Calculator Initialized - Logic Corrected');
 
 })();
