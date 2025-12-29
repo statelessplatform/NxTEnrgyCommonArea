@@ -2,20 +2,25 @@
     'use strict';
 
     // MSEB Slab Structure for LT Residential (FY 2025-26)
-    // Based on the Excel sheet breakdown
     const MSEB_SLABS = [
-        { min: 0, max: 100, rate: 6.25 },      // Base: 4.28 + FAC: 0.5 + Wheeling: 1.47
-        { min: 101, max: 300, rate: 13.07 },   // Base: 11.1 + FAC: 0.5 + Wheeling: 1.47
-        { min: 301, max: 500, rate: 17.35 },   // Base: 15.38 + FAC: 0.5 + Wheeling: 1.47
-        { min: 501, max: Infinity, rate: 19.65 } // Base: 17.68 + FAC: 0.5 + Wheeling: 1.47
+        { min: 0, max: 100, rate: 6.25 },
+        { min: 101, max: 300, rate: 13.07 },
+        { min: 301, max: 500, rate: 17.35 },
+        { min: 501, max: Infinity, rate: 19.65 }
     ];
 
-    const ELECTRICITY_DUTY_RATE = 0.16; // 16% electricity duty
-    const FIXED_CHARGE_MONTHLY = 130; // Rs 130/month for residential
+    const ELECTRICITY_DUTY_RATE = 0.16;
+    const FIXED_CHARGE_MONTHLY = 130;
     
     const COMPETITOR_RATE = 7.50;
-    const NXT_RATE = 5.50;
+    const NXT_RATE_BASE = 5.50;
     const NXT_FIXED_MONTHLY = 200;
+    
+    // 20-Year Projection Constants
+    const MSEDCL_INCREASE_RATE = 0.03; // 3% per year
+    const DISCOUNT_RATE = 0.02; // 2% discount
+    const DISCOUNT_INTERVAL = 4; // Every 4 years
+    const DEGRADATION_RATE = 0.01; // 1% per year
 
     // Elements
     const slider = document.getElementById('unitSlider');
@@ -25,17 +30,18 @@
     const toggleContainer = document.querySelector('.view-toggle-container');
     const complianceToggle = document.getElementById('complianceToggle');
     const complianceContent = document.getElementById('complianceContent');
+    const projectionToggle = document.getElementById('projectionToggle');
+    const projectionContent = document.getElementById('projectionContent');
 
     function formatCurrency(num) {
         return '₹' + Math.round(num).toLocaleString('en-IN');
     }
 
-    // Calculate MSEB bill with slab rates + duty (matching Excel logic)
+    // Calculate MSEB bill with slab rates + duty
     function calculateMSEBBill(units) {
         let remainingUnits = units;
         let variableBill = 0;
 
-        // Calculate slab-wise charges
         for (const slab of MSEB_SLABS) {
             if (remainingUnits <= 0) break;
 
@@ -50,13 +56,62 @@
             remainingUnits -= unitsInSlab;
         }
 
-        // Add 16% electricity duty on variable bill
         const electricityDuty = variableBill * ELECTRICITY_DUTY_RATE;
-        
-        // Total = Fixed Charge + Variable Bill + Electricity Duty
         const totalBill = FIXED_CHARGE_MONTHLY + variableBill + electricityDuty;
         
         return totalBill;
+    }
+
+    // Calculate NxTEnrgy rate with discounts
+    function getNxTEnrgyRate(year) {
+        const discountsPassed = Math.floor((year - 1) / DISCOUNT_INTERVAL);
+        const discountMultiplier = Math.pow((1 - DISCOUNT_RATE), discountsPassed);
+        return NXT_RATE_BASE * discountMultiplier;
+    }
+
+    // Generate 20-year projection
+    function generate20YearProjection(monthlyUnits) {
+        const tableBody = document.getElementById('projectionTableBody');
+        tableBody.innerHTML = '';
+        
+        let totalSavings = 0;
+        let currentUnitsAnnual = monthlyUnits * 12;
+        
+        // Get base MSEDCL monthly cost
+        const baseMSEDCLMonthlyCost = calculateMSEBBill(monthlyUnits);
+        
+        for (let year = 1; year <= 20; year++) {
+            // Apply degradation to units
+            const yearMultiplier = Math.pow((1 - DEGRADATION_RATE), (year - 1));
+            const effectiveUnits = currentUnitsAnnual * yearMultiplier;
+            
+            // MSEDCL cost with 3% annual increase
+            const msedclInflation = Math.pow((1 + MSEDCL_INCREASE_RATE), (year - 1));
+            const msedclAnnualCost = baseMSEDCLMonthlyCost * 12 * msedclInflation;
+            
+            // NxTEnrgy rate with discount every 4 years
+            const nxtRate = getNxTEnrgyRate(year);
+            const nxtAnnualCost = (effectiveUnits * nxtRate) + (NXT_FIXED_MONTHLY * 12);
+            
+            // Annual savings
+            const annualSavings = msedclAnnualCost - nxtAnnualCost;
+            totalSavings += annualSavings;
+            
+            // Create table row
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>Year ${year}</td>
+                <td>${formatCurrency(msedclAnnualCost)}</td>
+                <td>₹${nxtRate.toFixed(2)}/unit</td>
+                <td>${Math.round(effectiveUnits).toLocaleString('en-IN')}</td>
+                <td>${formatCurrency(nxtAnnualCost)}</td>
+                <td>${formatCurrency(annualSavings)}</td>
+            `;
+            tableBody.appendChild(row);
+        }
+        
+        // Update total savings
+        document.getElementById('total20YearSavings').textContent = formatCurrency(totalSavings);
     }
 
     function calculate() {
@@ -85,12 +140,10 @@
         unitsDisplay.textContent = monthlyUnits.toLocaleString('en-IN');
 
         // CALCULATION LOGIC WITH EXACT MSEB SLAB RATES
-        // Step 1: Calculate monthly costs
-        const monthlyGridCost = calculateMSEBBill(monthlyUnits); // Slab-based with duty
+        const monthlyGridCost = calculateMSEBBill(monthlyUnits);
         const monthlyCompetitorCost = monthlyUnits * COMPETITOR_RATE;
-        const monthlyNxtCost = (monthlyUnits * NXT_RATE) + NXT_FIXED_MONTHLY;
+        const monthlyNxtCost = (monthlyUnits * NXT_RATE_BASE) + NXT_FIXED_MONTHLY;
 
-        // Step 2: If yearly view, multiply monthly costs by 12
         let displayGridCost, displayCompetitorCost, displayNxtCost;
         
         if (isYearly) {
@@ -103,26 +156,24 @@
             displayNxtCost = monthlyNxtCost;
         }
 
-        // Step 3: Calculate Savings
         const savingsVsGrid = displayGridCost - displayNxtCost;
         const savingsVsCompetitor = displayCompetitorCost - displayNxtCost;
         const savingsPercent = (savingsVsGrid / displayGridCost) * 100;
 
-        // Step 4: Update UI - Costs
+        // Update UI
         document.getElementById('gridCost').textContent = formatCurrency(displayGridCost);
         document.getElementById('competitorCost').textContent = formatCurrency(displayCompetitorCost);
         document.getElementById('nxtCost').textContent = formatCurrency(displayNxtCost);
-
-        // Step 5: Update UI - Comparison & Savings
         document.getElementById('savingsVsCompetitor').textContent = formatCurrency(savingsVsCompetitor);
         document.getElementById('totalSavings').textContent = formatCurrency(savingsVsGrid);
         document.getElementById('savingsPercent').textContent = Math.round(savingsPercent) + '%';
+        
+        // Generate 20-year projection
+        generate20YearProjection(monthlyUnits);
     }
 
     // Event Listeners
-    slider.addEventListener('input', function() {
-        calculate();
-    });
+    slider.addEventListener('input', calculate);
 
     manualInput.addEventListener('input', function() {
         let val = parseInt(this.value);
@@ -132,11 +183,15 @@
         }
     });
 
-    viewToggle.addEventListener('change', function() {
-        calculate();
+    viewToggle.addEventListener('change', calculate);
+
+    // Projection Accordion
+    projectionToggle.addEventListener('click', function() {
+        this.classList.toggle('active');
+        projectionContent.classList.toggle('active');
     });
 
-    // Compliance Accordion Toggle
+    // Compliance Accordion
     complianceToggle.addEventListener('click', function() {
         this.classList.toggle('active');
         complianceContent.classList.toggle('active');
@@ -157,6 +212,6 @@
 
     // Init
     calculate();
-    console.log('✅ Society Calculator - MSEB Slab Rates from Excel Applied');
+    console.log('✅ Society Calculator Fully Initialized - All Features Working');
 
 })();
