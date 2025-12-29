@@ -13,7 +13,7 @@
     const FIXED_CHARGE_MONTHLY = 130;
     
     const COMPETITOR_RATE = 7.50;
-    const NXT_RATE_BASE = 5.50;
+    const NXT_RATE_BASE = 5.40;
     const NXT_FIXED_MONTHLY = 200;
     
     // 20-Year Projection Constants
@@ -125,14 +125,14 @@
             document.getElementById('totalSavingsLabel').textContent = "Annual";
             document.getElementById('vsLabel').textContent = "Annual Savings over Competitor:";
             document.getElementById('vsSubtext').textContent = "Extra savings with NxTEnrgy vs Competitor VNM per year";
-            document.getElementById('nxtSubtext').textContent = "@ ₹5.50/unit + ₹2,400/year";
+            document.getElementById('nxtSubtext').textContent = "@ ₹5.40/unit + ₹2,400/year";
         } else {
             toggleContainer.classList.remove('yearly-active');
             document.getElementById('costTitle').textContent = "Monthly";
             document.getElementById('totalSavingsLabel').textContent = "Monthly";
             document.getElementById('vsLabel').textContent = "Monthly Savings over Competitor:";
             document.getElementById('vsSubtext').textContent = "Extra savings with NxTEnrgy vs Competitor VNM per month";
-            document.getElementById('nxtSubtext').textContent = "@ ₹5.50/unit + ₹200/mo";
+            document.getElementById('nxtSubtext').textContent = "@ ₹5.40/unit + ₹200/mo";
         }
         
         // Sync Inputs
