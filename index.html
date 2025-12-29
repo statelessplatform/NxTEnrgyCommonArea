@@ -3,21 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NxTEnrgy Solar Calculator - Society Edition</title>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self'; img-src 'self' data:;">
+    <title>Society Savings Calculator | NxTEnrgy</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏢</text></svg>">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
-        <!-- HEADER -->
         <header>
-            <h1><span class="emoji">⚡</span> NxTEnrgy Solar Cost Calculator</h1>
-            <p class="subtitle">Compare. Calculate. Save Big with Solar Power</p>
+            <h1><span class="emoji">🏢</span> Society Common Area Calculator</h1>
+            <p class="subtitle">High-Volume Savings: NxTEnrgy vs. Competitor VNM</p>
         </header>
 
-        <!-- VIEW TOGGLE (Monthly/Annual) -->
+        <!-- VIEW TOGGLE SWITCH -->
         <div class="view-toggle-container">
             <span class="toggle-label" id="lblMonthly">Monthly</span>
             <label class="switch">
@@ -27,166 +28,165 @@
             <span class="toggle-label" id="lblYearly">Annual</span>
         </div>
 
-        <!-- MAIN CALCULATOR LAYOUT -->
         <div class="calculator-layout">
-            <!-- LEFT: INPUT CONTROLS -->
-            <div>
-                <div class="card">
+            <!-- INPUT SECTION -->
+            <div class="input-panel">
+                <div class="card control-card">
                     <div class="card-header">
-                        <h2 class="card-title"><span class="emoji">📊</span> Your Consumption</h2>
+                        <h2 class="card-title"><span class="emoji">⚡</span> Monthly Consumption</h2>
                     </div>
-
+                    
                     <div class="slider-container">
                         <div class="slider-readout">
-                            <span class="readout-value" id="unitsDisplay">10000</span>
-                            <span class="readout-unit">Units / Month</span>
+                            <span class="readout-value" id="unitsDisplay">5,000</span>
+                            <span class="readout-unit">Units per Month</span>
                         </div>
-
-                        <input type="range" id="unitSlider" class="range-slider" 
-                               min="5000" max="1000000" value="10000" step="1000">
-
+                        
+                        <input type="range" id="unitSlider" min="5000" max="1000000" step="1000" value="5000" class="range-slider">
+                        
                         <div class="slider-labels">
-                            <span>5,000</span>
-                            <span>10,00,000</span>
+                            <span>5k</span>
+                            <span>2.5L</span>
+                            <span>5L</span>
+                            <span>7.5L</span>
+                            <span>10L</span>
                         </div>
                     </div>
-
-                    <div class="manual-input">
-                        <label for="manualUnits">Or enter manually:</label>
-                        <input type="number" id="manualUnits" min="5000" max="1000000" value="10000">
+                    
+                    <div class="input-group manual-input">
+                        <label for="manualUnits">Enter Average Monthly Units:</label>
+                        <input type="number" id="manualUnits" min="5000" max="1000000" value="5000" step="1000">
                     </div>
 
                     <div class="info-box">
-                        <span class="emoji">💡</span>
+                        <span class="emoji">ℹ️</span>
                         <p><strong>How it works:</strong> Enter your average monthly consumption. Toggle to "Annual" view to see 12-month projections.</p>
+                    </div>
+                </div>
+
+                <!-- COMPARISON BOX -->
+                <div class="card vs-card">
+                    <div class="vs-header">
+                        <span class="emoji">🥊</span> Head-to-Head Advantage
+                    </div>
+                    <div class="vs-content">
+                        <div class="vs-row">
+                            <span id="vsLabel">Monthly Savings over Competitor:</span>
+                            <strong class="vs-highlight" id="savingsVsCompetitor">₹0</strong>
+                        </div>
+                        <p class="vs-subtext" id="vsSubtext">Extra savings with NxTEnrgy vs Competitor VNM</p>
                     </div>
                 </div>
             </div>
 
-            <!-- RIGHT: RESULTS -->
-            <div>
-                <!-- Cost Comparison Cards -->
-                <div class="card">
+            <!-- OUTPUT SECTION -->
+            <div class="output-panel">
+                <div class="card results-card">
                     <div class="card-header">
-                        <h2 class="card-title"><span class="emoji">💰</span> <span id="costTitle">Monthly</span> Cost Comparison</h2>
+                        <h2 class="card-title">
+                            <span class="emoji">💰</span> 
+                            <span id="costTitle">Monthly</span> Cost Breakdown
+                        </h2>
                     </div>
 
                     <div class="results-grid">
+                        <!-- GRID COST -->
                         <div class="result-card">
-                            <div class="result-label">Grid (₹10.50/unit)</div>
-                            <div class="result-value" id="gridCost">₹1,05,000</div>
-                            <div class="result-subtext">Standard Rate</div>
+                            <div class="result-label">Grid (MSEDCL)</div>
+                            <div class="result-value" id="gridCost">₹0</div>
+                            <div class="result-subtext">Slab-based + 16% duty + ₹130 fixed</div>
                         </div>
 
+                        <!-- COMPETITOR VNM -->
                         <div class="result-card secondary">
-                            <div class="result-label">Competitor (₹7.50/unit)</div>
-                            <div class="result-value" id="competitorCost">₹75,000</div>
-                            <div class="result-subtext">VNM Solar</div>
+                            <div class="result-label">Competitor VNM</div>
+                            <div class="result-value" id="competitorCost">₹0</div>
+                            <div class="result-subtext">@ ₹7.50/unit (Prepaid)</div>
                         </div>
 
+                        <!-- NxTEnrgy -->
                         <div class="result-card highlight">
-                            <div class="result-label">NxTEnrgy</div>
-                            <div class="result-value" id="nxtCost">₹54,200</div>
-                            <div class="result-subtext" id="nxtSubtext">@ ₹5.40/unit + ₹200/mo</div>
+                            <div class="result-label"><span class="emoji">🚀</span> NxTEnrgy</div>
+                            <div class="result-value" id="nxtCost">₹0</div>
+                            <div class="result-subtext" id="nxtSubtext">@ ₹5.50/unit + ₹200/mo</div>
                         </div>
                     </div>
-                </div>
 
-                <!-- VS Card (Competitor Comparison) -->
-                <div class="card vs-card">
-                    <div class="vs-header" id="vsLabel">Monthly Savings over Competitor:</div>
-                    <div class="vs-row">
-                        <span>Competitor VNM Cost:</span>
-                        <span id="competitorCost2">₹75,000</span>
+                    <!-- TOTAL SAVINGS -->
+                    <div class="total-savings-box">
+                        <div class="savings-label">
+                            <span class="emoji">🎉</span> 
+                            <span id="totalSavingsLabel">Monthly</span> Savings vs Grid
+                        </div>
+                        <div class="savings-value" id="totalSavings">₹0</div>
+                        <div class="savings-percent">You save <span id="savingsPercent">0%</span> on electricity costs!</div>
                     </div>
-                    <div class="vs-row">
-                        <span>NxTEnrgy Cost:</span>
-                        <span id="nxtCost2">₹54,200</span>
-                    </div>
-                    <hr style="margin: 16px 0; border: none; border-top: 1px solid rgba(255,255,255,0.2);">
-                    <div class="vs-row">
-                        <span style="font-weight: 700;">You Save:</span>
-                        <span class="vs-highlight" id="savingsVsCompetitor">₹20,800</span>
-                    </div>
-                    <p class="vs-subtext" id="vsSubtext">Extra savings with NxTEnrgy vs Competitor VNM per month</p>
-                </div>
-
-                <!-- Total Savings Box -->
-                <div class="total-savings-box">
-                    <div class="savings-label"><span id="totalSavingsLabel">Monthly</span> Savings vs Grid</div>
-                    <div class="savings-value" id="totalSavings">₹50,800</div>
-                    <div class="savings-percent">You save <span id="savingsPercent">48%</span> on your energy bills!</div>
                 </div>
             </div>
         </div>
 
-        <!-- 20-YEAR COST SCHEDULE SECTION (COLLAPSIBLE) -->
-        <section class="schedule-section">
-            <button class="schedule-toggle" id="scheduleToggle">
+        <!-- 20 YEAR PROJECTION SECTION -->
+        <div class="projection-section">
+            <button class="projection-toggle" id="projectionToggle">
                 <span class="emoji">📊</span>
-                <span class="schedule-toggle-title">20-Year Cost Schedule with 2% Discount Benefits</span>
-                <span class="toggle-icon">▼</span>
+                <span class="projection-title">20-Year Savings Projection (with rate escalation & discount)</span>
+                <span class="toggle-icon-proj" id="toggleIconProj">▼</span>
             </button>
-
-            <div class="schedule-content" id="scheduleContent">
-                <div class="schedule-intro">
-                    <p><strong>Exclusive Benefit:</strong> Enjoy a 2% compounding discount every 4 years on your NxTEnrgy subscription. This means your rates get progressively better over time!</p>
+            
+            <div class="projection-content" id="projectionContent">
+                <div class="projection-intro">
+                    <p><strong>Assumptions:</strong> MSEDCL rates increase 3% annually | NxTEnrgy rate ₹5.50 with 2% discount every 4 years | Solar degradation 1% annually</p>
                 </div>
 
-                <div class="schedule-highlight">
-                    <div class="highlight-item">
-                        <span class="highlight-label">Initial Rate</span>
-                        <span class="highlight-value">₹5.40/unit</span>
-                    </div>
-                    <div class="highlight-item">
-                        <span class="highlight-label">Rate at Year 20</span>
-                        <span class="highlight-value" id="finalRate">₹4.98/unit</span>
-                    </div>
-                    <div class="highlight-item">
-                        <span class="highlight-label">Total 20-Year Cost</span>
-                        <span class="highlight-value total" id="total20Year">₹1,24,99,865</span>
+                <div class="projection-summary">
+                    <div class="summary-card">
+                        <span class="emoji">💰</span>
+                        <h3>Total 20-Year Savings with NxTEnrgy</h3>
+                        <div class="summary-value" id="total20YearSavings">₹0</div>
+                        <p class="summary-note">Compared to staying with MSEDCL Grid</p>
                     </div>
                 </div>
 
                 <div class="table-container">
-                    <table class="schedule-table">
+                    <table class="projection-table">
                         <thead>
                             <tr>
                                 <th>Year</th>
-                                <th>Rate (₹/unit)</th>
-                                <th>Monthly Cost</th>
-                                <th>Annual Cost</th>
-                                <th>Discount Applied</th>
+                                <th>MSEDCL Cost</th>
+                                <th>NxTEnrgy Rate</th>
+                                <th>Annual Units</th>
+                                <th>NxTEnrgy Cost</th>
+                                <th>Annual Savings</th>
                             </tr>
                         </thead>
-                        <tbody id="scheduleTableBody">
-                            <!-- Populated by JavaScript -->
+                        <tbody id="projectionTableBody">
+                            <!-- Generated by JavaScript -->
                         </tbody>
                     </table>
                 </div>
             </div>
-        </section>
+        </div>
 
         <!-- COMPLIANCE SECTION -->
-        <section class="compliance-section">
+        <div class="compliance-section">
             <button class="compliance-toggle" id="complianceToggle">
-                <span class="emoji">✅</span>
-                <span class="compliance-title">Technical Parameters for Solar Power Friendly Land Parcel</span>
-                <span class="toggle-icon">▼</span>
+                <span class="emoji">📋</span>
+                <span class="compliance-title">Regulatory Compliance & Site Verification</span>
+                <span class="toggle-icon" id="toggleIcon">▼</span>
             </button>
-
+            
             <div class="compliance-content" id="complianceContent">
                 <div class="compliance-intro">
-                    <p><strong>Our site selection meets all recommended requirements set by MEDA and Niti Aayog</strong> for optimal solar energy production, ensuring maximum efficiency and sustainability.</p>
+                    <p>Our site selection meets all regulatory requirements set by <strong>MEDA</strong> and <strong>Niti Aayog</strong> for optimal solar energy production, ensuring maximum efficiency and sustainability.</p>
                 </div>
 
-                <h3 class="compliance-heading">Site Compliance Checklist</h3>
+                <h3 class="compliance-heading">Regulatory Compliance Verification</h3>
 
                 <div class="compliance-grid">
                     <div class="compliance-item">
                         <div class="item-header">
-                            <span class="compliance-icon">☀️</span>
-                            <span class="check-mark">✓</span>
+                            <div class="compliance-icon">☀️</div>
+                            <div class="check-mark">✓</div>
                         </div>
                         <h4>High Solar Irradiance Zone</h4>
                         <p>Located in high solar irradiance zone as identified by MEDA and Niti Aayog, ensuring optimal energy generation throughout the year.</p>
@@ -194,17 +194,17 @@
 
                     <div class="compliance-item">
                         <div class="item-header">
-                            <span class="compliance-icon">🏔️</span>
-                            <span class="check-mark">✓</span>
+                            <div class="compliance-icon">🏔️</div>
+                            <div class="check-mark">✓</div>
                         </div>
-                        <h4>Flat Terrain</h4>
+                        <h4>Flat Land Topology</h4>
                         <p>Flat terrain requiring minimal earthwork, reducing installation costs and environmental impact while maximizing solar panel efficiency.</p>
                     </div>
 
                     <div class="compliance-item">
                         <div class="item-header">
-                            <span class="compliance-icon">🌳</span>
-                            <span class="check-mark">✓</span>
+                            <div class="compliance-icon">🌞</div>
+                            <div class="check-mark">✓</div>
                         </div>
                         <h4>Zero Shadowing</h4>
                         <p>Site features zero shadowing from surrounding structures or vegetation, ensuring uninterrupted solar exposure for maximum power output.</p>
@@ -212,35 +212,35 @@
 
                     <div class="compliance-item">
                         <div class="item-header">
-                            <span class="compliance-icon">⚡</span>
-                            <span class="check-mark">✓</span>
+                            <div class="compliance-icon">⚡</div>
+                            <div class="check-mark">✓</div>
                         </div>
-                        <h4>Grid Connectivity</h4>
+                        <h4>Proximity to MSEDCL Sub-Stations</h4>
                         <p>Within reasonable distance from at least 3 (three) MSEDCL sub-stations, facilitating efficient power evacuation and grid connectivity.</p>
                     </div>
 
                     <div class="compliance-item">
                         <div class="item-header">
-                            <span class="compliance-icon">💧</span>
-                            <span class="check-mark">✓</span>
+                            <div class="compliance-icon">💧</div>
+                            <div class="check-mark">✓</div>
                         </div>
-                        <h4>Water Availability</h4>
+                        <h4>Natural Water Source Access</h4>
                         <p>Situated near natural water sources for panel cleaning and maintenance operations, ensuring sustained performance efficiency.</p>
                     </div>
 
                     <div class="compliance-item">
                         <div class="item-header">
-                            <span class="compliance-icon">🛣️</span>
-                            <span class="check-mark">✓</span>
+                            <div class="compliance-icon">🛣️</div>
+                            <div class="check-mark">✓</div>
                         </div>
-                        <h4>Road Access</h4>
+                        <h4>Road & Highway Accessibility</h4>
                         <p>Easily accessible through proper roads and highways, enabling efficient logistics for construction, operations, and maintenance.</p>
                     </div>
 
                     <div class="compliance-item">
                         <div class="item-header">
-                            <span class="compliance-icon">🤝</span>
-                            <span class="check-mark">✓</span>
+                            <div class="compliance-icon">🤝</div>
+                            <div class="check-mark">✓</div>
                         </div>
                         <h4>Community Support</h4>
                         <p>Located within a community that supports solar energy initiatives, ensuring smooth project implementation and long-term sustainability.</p>
@@ -248,43 +248,42 @@
                 </div>
 
                 <div class="validation-badge">
-                    <div class="badge-icon">🏆</div>
+                    <span class="badge-icon">✓</span>
                     <div class="badge-content">
-                        <h4>Verified & Validated Site</h4>
-                        <p>All technical and recommended requirements have been verified and validated. This location represents an ideal solar farm site with optimal conditions for maximum energy production and operational efficiency.</p>
+                        <h4>Site Validation Complete</h4>
+                        <p>All technical and regulatory requirements have been verified and validated. This location represents an ideal solar farm site with optimal conditions for maximum energy production and operational efficiency.</p>
                     </div>
                 </div>
             </div>
-        </section>
+        </div>
+
+        <button class="btn-icon" aria-label="Open user guide" data-action="guide">❓</button>
+
+        <dialog id="guideModal">
+            <h2><span class="emoji">🏢</span> How This Calculator Works</h2>
+            
+            <h3>📊 Input Your Consumption</h3>
+            <p>Enter your <strong>average monthly electricity consumption</strong> using the slider or manual input (5,000 to 10,00,000 units).</p>
+            
+            <h3>🔄 Toggle View Mode</h3>
+            <ul>
+                <li><strong>Monthly View:</strong> Shows costs for one month of consumption</li>
+                <li><strong>Annual View:</strong> Shows projected costs for 12 months (Monthly × 12)</li>
+            </ul>
+            
+            <h3>💡 Understanding The Plans</h3>
+            <ul>
+                <li><strong>Grid (MSEDCL):</strong> Progressive slab rates (₹6.25 to ₹19.65/unit) + 16% duty + ₹130 fixed charge</li>
+                <li><strong>Competitor VNM:</strong> ₹7.50/unit flat - Prepaid model with high upfront cost</li>
+                <li><strong>NxTEnrgy:</strong> ₹5.50/unit + ₹200/month - Best value with 2% discount every 4 years</li>
+            </ul>
+            
+            <h3>📊 20-Year Projection</h3>
+            <p>See long-term savings with realistic assumptions: MSEDCL increases 3%/year, NxTEnrgy offers 2% discount every 4 years, solar panel degradation 1%/year</p>
+            
+            <button class="btn-primary modal-close" data-action="closeModal">Got it! <span class="emoji">✨</span></button>
+        </dialog>
     </div>
-
-    <!-- HELP BUTTON -->
-    <button class="btn-icon" data-action="guide">❓</button>
-
-    <!-- MODAL DIALOG -->
-    <dialog id="guideModal">
-        <h2>📖 How to Use This Calculator</h2>
-        <p>This tool helps you understand potential savings by switching to NxTEnrgy solar power.</p>
-
-        <h3>Step 1: Enter Your Consumption</h3>
-        <p>Use the slider or input box to enter your average monthly electricity consumption in units (kWh).</p>
-
-        <h3>Step 2: Toggle View</h3>
-        <p>Switch between Monthly and Annual view to see projections for different time periods.</p>
-
-        <h3>Step 3: Compare Costs</h3>
-        <p>Review the comparison between:</p>
-        <ul>
-            <li><strong>Grid Rate:</strong> Standard electricity at ₹10.50/unit</li>
-            <li><strong>Competitor:</strong> VNM Solar at ₹7.50/unit</li>
-            <li><strong>NxTEnrgy:</strong> Our rate at ₹5.40/unit + ₹200/month fixed charge</li>
-        </ul>
-
-        <h3>Understanding Savings</h3>
-        <p>The calculator shows both your savings vs the Grid and the extra savings vs our competitor, helping you make an informed decision.</p>
-
-        <button class="btn-primary" data-action="closeModal">Got It!</button>
-    </dialog>
 
     <script src="app.js"></script>
 </body>
