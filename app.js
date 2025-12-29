@@ -10,17 +10,18 @@
     ];
 
     const ELECTRICITY_DUTY_RATE = 0.16;
-    const FIXED_CHARGE_MONTHLY = 130;
+    const FIXED_CHARGE_MONTHLY = 0; // Set to 0 - not included in Excel calculation
     
-    const COMPETITOR_RATE = 7.50;
-    const NXT_RATE_BASE = 5.40;
+    const COMPETITOR_RATE_YEAR1 = 7.50; // Koku Solar VNM
+    const NXT_RATE_BASE = 5.50; // NxTEnrgy starting rate
     const NXT_FIXED_MONTHLY = 200;
     
-    // 20-Year Projection Constants
-    const MSEDCL_INCREASE_RATE = 0.03; // 3% per year
-    const DISCOUNT_RATE = 0.02; // 2% discount
-    const DISCOUNT_INTERVAL = 4; // Every 4 years
-    const DEGRADATION_RATE = 0.01; // 1% per year
+    // 20-Year Projection Constants (from Excel sheet)
+    const MSEDCL_INCREASE_RATE = 0.03; // 3% per year (from Excel)
+    const COMPETITOR_DECREASE_RATE = 0.03; // Koku decreases 3% annually (from Excel)
+    const NXT_DISCOUNT_RATE = 0.02; // NxTEnrgy: 2% discount
+    const NXT_DISCOUNT_INTERVAL = 4; // Every 4 years
+    const DEGRADATION_RATE = 0.00; // Set to 0 - societies consume electricity, not generate
 
     // Elements
     const slider = document.getElementById('unitSlider');
@@ -62,11 +63,25 @@
         return totalBill;
     }
 
-    // Calculate NxTEnrgy rate with discounts
+    // Calculate NxTEnrgy rate with 2% discount at START of every 4th year
     function getNxTEnrgyRate(year) {
-        const discountsPassed = Math.floor((year - 1) / DISCOUNT_INTERVAL);
-        const discountMultiplier = Math.pow((1 - DISCOUNT_RATE), discountsPassed);
+        // Discount applies at year 4, 8, 12, 16, 20
+        // Year 1-3: ₹5.50
+        // Year 4-7: ₹5.39 (5.50 * 0.98)
+        // Year 8-11: ₹5.28 (5.50 * 0.98 * 0.98)
+        // Year 12-15: ₹5.18 (5.50 * 0.98^3)
+        // Year 16-19: ₹5.07 (5.50 * 0.98^4)
+        // Year 20: ₹4.97 (5.50 * 0.98^5)
+        
+        const discountsPassed = Math.floor(year / NXT_DISCOUNT_INTERVAL);
+        const discountMultiplier = Math.pow((1 - NXT_DISCOUNT_RATE), discountsPassed);
         return NXT_RATE_BASE * discountMultiplier;
+    }
+
+    // Calculate Competitor (Koku) rate with -3% annually
+    function getCompetitorRate(year) {
+        const rateMultiplier = Math.pow((1 - COMPETITOR_DECREASE_RATE), (year - 1));
+        return COMPETITOR_RATE_YEAR1 * rateMultiplier;
     }
 
     // Generate 20-year projection
@@ -77,11 +92,11 @@
         let totalSavings = 0;
         let currentUnitsAnnual = monthlyUnits * 12;
         
-        // Get base MSEDCL monthly cost
+        // Get base MSEDCL monthly cost for Year 1
         const baseMSEDCLMonthlyCost = calculateMSEBBill(monthlyUnits);
         
         for (let year = 1; year <= 20; year++) {
-            // Apply degradation to units
+            // Apply degradation to units (0% = no degradation for electricity consumption)
             const yearMultiplier = Math.pow((1 - DEGRADATION_RATE), (year - 1));
             const effectiveUnits = currentUnitsAnnual * yearMultiplier;
             
@@ -89,18 +104,27 @@
             const msedclInflation = Math.pow((1 + MSEDCL_INCREASE_RATE), (year - 1));
             const msedclAnnualCost = baseMSEDCLMonthlyCost * 12 * msedclInflation;
             
-            // NxTEnrgy rate with discount every 4 years
+            // NxTEnrgy rate with 2% discount at START of every 4th year
             const nxtRate = getNxTEnrgyRate(year);
             const nxtAnnualCost = (effectiveUnits * nxtRate) + (NXT_FIXED_MONTHLY * 12);
             
-            // Annual savings
+            // Annual savings vs MSEDCL
             const annualSavings = msedclAnnualCost - nxtAnnualCost;
             totalSavings += annualSavings;
             
+            // Check if this is the START of a discount period
+            const isDiscountYear = (year % NXT_DISCOUNT_INTERVAL === 0 || year === 4);
+            
             // Create table row
             const row = document.createElement('tr');
+            
+            // Highlight discount years
+            if (isDiscountYear && year >= 4) {
+                row.style.background = '#E8F5E9';
+            }
+            
             row.innerHTML = `
-                <td>Year ${year}</td>
+                <td>${year === 1 ? 'Year 1' : 'Year ' + year}${(year >= 4 && isDiscountYear) ? ' 🎉' : ''}</td>
                 <td>${formatCurrency(msedclAnnualCost)}</td>
                 <td>₹${nxtRate.toFixed(2)}/unit</td>
                 <td>${Math.round(effectiveUnits).toLocaleString('en-IN')}</td>
@@ -125,14 +149,14 @@
             document.getElementById('totalSavingsLabel').textContent = "Annual";
             document.getElementById('vsLabel').textContent = "Annual Savings over Competitor:";
             document.getElementById('vsSubtext').textContent = "Extra savings with NxTEnrgy vs Competitor VNM per year";
-            document.getElementById('nxtSubtext').textContent = "@ ₹5.40/unit + ₹2,400/year";
+            document.getElementById('nxtSubtext').textContent = "@ ₹5.50/unit + ₹2,400/year";
         } else {
             toggleContainer.classList.remove('yearly-active');
             document.getElementById('costTitle').textContent = "Monthly";
             document.getElementById('totalSavingsLabel').textContent = "Monthly";
             document.getElementById('vsLabel').textContent = "Monthly Savings over Competitor:";
             document.getElementById('vsSubtext').textContent = "Extra savings with NxTEnrgy vs Competitor VNM per month";
-            document.getElementById('nxtSubtext').textContent = "@ ₹5.40/unit + ₹200/mo";
+            document.getElementById('nxtSubtext').textContent = "@ ₹5.50/unit + ₹200/mo";
         }
         
         // Sync Inputs
@@ -141,7 +165,7 @@
 
         // CALCULATION LOGIC WITH EXACT MSEB SLAB RATES
         const monthlyGridCost = calculateMSEBBill(monthlyUnits);
-        const monthlyCompetitorCost = monthlyUnits * COMPETITOR_RATE;
+        const monthlyCompetitorCost = monthlyUnits * COMPETITOR_RATE_YEAR1;
         const monthlyNxtCost = (monthlyUnits * NXT_RATE_BASE) + NXT_FIXED_MONTHLY;
 
         let displayGridCost, displayCompetitorCost, displayNxtCost;
@@ -212,6 +236,6 @@
 
     // Init
     calculate();
-    console.log('✅ Society Calculator Fully Initialized - All Features Working');
+    console.log('✅ NxTEnrgy Calculator - Discount at START of every 4th year');
 
 })();
