@@ -13,7 +13,7 @@
     const FIXED_CHARGE_MONTHLY = 0; // Set to 0 - not included in Excel calculation
     
     const COMPETITOR_RATE_YEAR1 = 7.50; // Koku Solar VNM
-    const NXT_RATE_BASE = 5.50; // NxTEnrgy starting rate
+    const NXT_RATE_BASE = 5.40; // NxTEnrgy starting rate
     const NXT_FIXED_MONTHLY = 200;
     
     // 20-Year Projection Constants (from Excel sheet)
@@ -66,12 +66,12 @@
     // Calculate NxTEnrgy rate with 2% discount at START of every 4th year
     function getNxTEnrgyRate(year) {
         // Discount applies at year 4, 8, 12, 16, 20
-        // Year 1-3: ₹5.50
-        // Year 4-7: ₹5.39 (5.50 * 0.98)
-        // Year 8-11: ₹5.28 (5.50 * 0.98 * 0.98)
-        // Year 12-15: ₹5.18 (5.50 * 0.98^3)
-        // Year 16-19: ₹5.07 (5.50 * 0.98^4)
-        // Year 20: ₹4.97 (5.50 * 0.98^5)
+        // Year 1-3: ₹5.40
+        // Year 4-7: ₹5.39 (5.40 * 0.98)
+        // Year 8-11: ₹5.28 (5.40 * 0.98 * 0.98)
+        // Year 12-15: ₹5.18 (5.40 * 0.98^3)
+        // Year 16-19: ₹5.07 (5.40 * 0.98^4)
+        // Year 20: ₹4.97 (5.40 * 0.98^5)
         
         const discountsPassed = Math.floor(year / NXT_DISCOUNT_INTERVAL);
         const discountMultiplier = Math.pow((1 - NXT_DISCOUNT_RATE), discountsPassed);
@@ -149,14 +149,14 @@
             document.getElementById('totalSavingsLabel').textContent = "Annual";
             document.getElementById('vsLabel').textContent = "Annual Savings over Competitor:";
             document.getElementById('vsSubtext').textContent = "Extra savings with NxTEnrgy vs Competitor VNM per year";
-            document.getElementById('nxtSubtext').textContent = "@ ₹5.50/unit + ₹2,400/year";
+            document.getElementById('nxtSubtext').textContent = "@ ₹5.40/unit + ₹2,400/year";
         } else {
             toggleContainer.classList.remove('yearly-active');
             document.getElementById('costTitle').textContent = "Monthly";
             document.getElementById('totalSavingsLabel').textContent = "Monthly";
             document.getElementById('vsLabel').textContent = "Monthly Savings over Competitor:";
             document.getElementById('vsSubtext').textContent = "Extra savings with NxTEnrgy vs Competitor VNM per month";
-            document.getElementById('nxtSubtext').textContent = "@ ₹5.50/unit + ₹200/mo";
+            document.getElementById('nxtSubtext').textContent = "@ ₹5.40/unit + ₹200/mo";
         }
         
         // Sync Inputs
